@@ -22,10 +22,12 @@
 
         [Required]
         [Display(Name = "Registrado")]
-        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:MM/dd/yyyy}")]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd/MM/yyyy}")]
         public DateTime FechaRegistro { get; set; }
 
         public string Notas { get; set; }
-        
+
+        public User User { get; set; }
+
     }
 }

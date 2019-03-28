@@ -1,9 +1,10 @@
 ﻿namespace M_Vehicular_Web.Data
 {
-    using Models;
+    using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
     using Microsoft.EntityFrameworkCore;
+    using Models;
 
-    public class DataContext : DbContext
+    public class DataContext : IdentityDbContext<User>
     {
         public DbSet<Vehiculo> Vehiculos { get; set; }
 
@@ -11,5 +12,4 @@
         {
         }
     }
-
 }
