@@ -1,7 +1,8 @@
 ﻿namespace M_Vehicular_Web
 {
     using Data;
-    using M_Vehicular_Web.Models;
+    using Helpers;
+    using Models;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Http;
@@ -42,7 +43,9 @@
 
             services.AddTransient<SeedDb>();
 
-            services.AddScoped<IRepository, Repository>();
+            services.AddScoped<IVehiculoRepository, VehiculoRepository>();
+
+            services.AddScoped<IUserHelper, UserHelper>();
 
             services.Configure<CookiePolicyOptions>(options =>
             {

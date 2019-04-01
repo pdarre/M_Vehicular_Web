@@ -1,36 +1,39 @@
 ﻿namespace M_Vehicular_Web.Controllers
 {
     using Data;
+    using Helpers;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.EntityFrameworkCore;
     using Models;
     using System;
-    using System.Linq;
+    using System.Threading.Tasks;
 
     public class VehiculosController : Controller
     {
-        private readonly IRepository repository;
+        private readonly IVehiculoRepository vehiculoRepository;
+        private readonly IUserHelper userHelper;
 
-        public VehiculosController(IRepository repository)
+        public VehiculosController(IVehiculoRepository vehiculoRepository, IUserHelper userHelper)
         {
-            this.repository = repository;
+            this.vehiculoRepository = vehiculoRepository;
+            this.userHelper = userHelper;
         }
 
         // GET: Vehiculos
         public ActionResult Index()
         {
-            return View(this.repository.GetVehiculos());
+            return View(this.vehiculoRepository.GetAll());
         }
 
         // GET: Vehiculos/Details/5
-        public ActionResult Details(int? id)
+        public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var vehiculo = this.repository.GetVehiculo(id.Value);
+            var vehiculo = await this.vehiculoRepository.GetByIdAsync(id.Value);
             if (vehiculo == null)
             {
                 return NotFound();
@@ -48,29 +51,32 @@
         // POST: Vehiculos/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(Vehiculo vehiculo)
+        public async Task<IActionResult> Create(Vehiculo vehiculo)
         {
             DateTime date = DateTime.Now.Date;
             vehiculo.FechaRegistro = date;
-
+            
             if (ModelState.IsValid)
             {
-                this.repository.AddVehiculo(vehiculo);
-                this.repository.SaveAllAsync();
+                //TODO: Change for the logged user
+                vehiculo.User = await this.userHelper.GetUserByEmailAsync("pablo@pablo.com");
+
+                await this.vehiculoRepository.CreateAsync(vehiculo);
                 return RedirectToAction(nameof(Index));
+
             }
             return View(vehiculo);
         }
 
         // GET: Vehiculos/Edit/5
-        public ActionResult Edit(int? id)
+        public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var vehiculo = this.repository.GetVehiculo(id.Value);
+            var vehiculo = await this.vehiculoRepository.GetByIdAsync(id.Value);
             if (vehiculo == null)
             {
                 return NotFound();
@@ -81,7 +87,7 @@
         // POST: Vehiculos/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, Vehiculo vehiculo)
+        public async Task<IActionResult> Edit(int id, Vehiculo vehiculo)
         {
             if (id != vehiculo.Id)
             {
@@ -92,12 +98,13 @@
             {
                 try
                 {
-                    this.repository.UpdateVehiculo(vehiculo);
-                    this.repository.SaveAllAsync();
+                    //TODO: Change for the logged user
+                    vehiculo.User = await this.userHelper.GetUserByEmailAsync("pablo@pablo.com");
+                    await this.vehiculoRepository.UpdateAsync(vehiculo);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!this.repository.VehiculoExists(vehiculo.Id))
+                    if (!await this.vehiculoRepository.ExistAsync(vehiculo.Id))
                     {
                         return NotFound();
                     }
@@ -112,14 +119,14 @@
         }
 
         // GET: Vehiculos/Delete/5
-        public ActionResult Delete(int? id)
+        public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var vehiculo = this.repository.GetVehiculo(id.Value);
+            var vehiculo = await this.vehiculoRepository.GetByIdAsync(id.Value);
 
             if (vehiculo == null)
             {
@@ -132,11 +139,10 @@
         // POST: Vehiculos/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public IActionResult DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var vehiculo = this.repository.GetVehiculo(id);
-            this.repository.RemoveVehiculo(vehiculo);
-            this.repository.SaveAllAsync();
+            var vehiculo = await this.vehiculoRepository.GetByIdAsync(id);
+            await this.vehiculoRepository.DeleteAsync(vehiculo);
             return RedirectToAction(nameof(Index));
         }
     }

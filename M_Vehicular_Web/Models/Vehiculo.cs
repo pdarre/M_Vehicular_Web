@@ -3,7 +3,7 @@
     using System;
     using System.ComponentModel.DataAnnotations;
 
-    public class Vehiculo
+    public class Vehiculo : IModelo
     {
         public int Id { get; set; }
 
@@ -26,7 +26,7 @@
         public DateTime FechaRegistro { get; set; }
 
         public string Notas { get; set; }
-
+        
         public User User { get; set; }
 
     }

@@ -1,5 +1,6 @@
 ﻿namespace M_Vehicular_Web.Data
 {
+    using M_Vehicular_Web.Helpers;
     using Microsoft.AspNetCore.Identity;
     using Models;
     using System;
@@ -9,12 +10,12 @@
     public class SeedDb
     {
         private readonly DataContext context;
-        private readonly UserManager<User> userManager;
+        private readonly IUserHelper userHelper;
 
-        public SeedDb(DataContext context, UserManager<User> userManager)
+        public SeedDb(DataContext context, IUserHelper userHelper)
         {
             this.context = context;
-            this.userManager = userManager;
+            this.userHelper = userHelper;
         }
 
         public async Task SeedAsync()
@@ -22,7 +23,7 @@
             DateTime date = DateTime.Now.Date;
             await this.context.Database.EnsureCreatedAsync();
 
-            var user = await this.userManager.FindByEmailAsync("pablo@pablo.com");
+            var user = await this.userHelper.GetUserByEmailAsync("pablo@pablo.com");
             if (user == null)
             {
                 user = new User
@@ -33,7 +34,7 @@
                     UserName = "pablo@pablo.com"
                 };
 
-                var result = await this.userManager.CreateAsync(user, "pablo1");
+                var result = await this.userHelper.AddUserAsync(user, "pablo1");
                 if (result != IdentityResult.Success)
                 {
                     throw new InvalidOperationException("Could not create the user in seeder");
