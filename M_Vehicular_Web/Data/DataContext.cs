@@ -8,6 +8,8 @@
     {
         public DbSet<Vehiculo> Vehiculos { get; set; }
 
+        public DbSet<Taller> Talleres { get; set; }
+
         public DataContext(DbContextOptions<DataContext> options) : base(options)
         {
         }

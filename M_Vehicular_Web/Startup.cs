@@ -42,9 +42,8 @@
             });
 
             services.AddTransient<SeedDb>();
-
             services.AddScoped<IVehiculoRepository, VehiculoRepository>();
-
+            services.AddScoped<ITallerRepository, TallerRepository>();
             services.AddScoped<IUserHelper, UserHelper>();
 
             services.Configure<CookiePolicyOptions>(options =>
