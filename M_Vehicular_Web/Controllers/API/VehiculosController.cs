@@ -17,7 +17,7 @@
         [HttpGet]
         public ActionResult GetVehiculos()
         {
-            return Ok(this.vehiculoRepository.GetAll());
+            return Ok(this.vehiculoRepository.GetAllWithUsers());
         }
     }
 }

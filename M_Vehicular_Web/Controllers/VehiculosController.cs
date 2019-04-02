@@ -6,6 +6,7 @@
     using Microsoft.EntityFrameworkCore;
     using Models;
     using System;
+    using System.Linq;
     using System.Threading.Tasks;
 
     public class VehiculosController : Controller
@@ -22,7 +23,7 @@
         // GET: Vehiculos
         public ActionResult Index()
         {
-            return View(this.vehiculoRepository.GetAll());
+            return View(this.vehiculoRepository.GetAll().OrderBy(v => v.Marca));
         }
 
         // GET: Vehiculos/Details/5
